@@ -6,7 +6,11 @@
     app:cardElevation="7dp"
     app:contentPadding="7dp"
     app:cardCornerRadius="7dp"
-    app:cardMaxElevation="7dp">
+    app:cardMaxElevation="7dp"
+    android:layout_gravity="center"
+    android:layout_margin="7dp"
+    app:cardBackgroundColor="@color/viewBg"
+    >
     
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,8 +19,7 @@
         <ImageView
             android:id="@+id/iv_movieImage"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:background="@drawable/avengers"
+            android:layout_height="160dp"
             android:clickable="true"
             android:scaleType="fitXY"
             />
@@ -25,8 +28,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/iv_movieImage"
-            android:textSize="20dp"
-            android:textStyle="bold"
+            android:textColor="@color/album_title"
+            android:textSize="15dp"
             android:text="Infinity Wars"/>
 
     </RelativeLayout>
