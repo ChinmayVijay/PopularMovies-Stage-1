@@ -15,6 +15,9 @@ public class DetailsActivity extends AppCompatActivity {
     private static final String TAG = DetailsActivity.class.getSimpleName();
     ImageView posterImage;
     TextView movieTitle;
+    TextView movieOverview;
+    TextView movieReleaseDate;
+    TextView movieRating;
     Movies movie;
 
     @Override
@@ -23,8 +26,11 @@ public class DetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details);
 
 
-        movieTitle = findViewById(R.id.tv_movie_title);
+        movieTitle = findViewById(R.id.tv_movie_title_text);
         posterImage = findViewById(R.id.iv_poster);
+        movieOverview = findViewById(R.id.tv_movie_overview_text);
+        movieReleaseDate = findViewById(R.id.tv_movie_release_date_text);
+        movieRating = findViewById(R.id.tv_movie_user_rating_text);
 
         movie = getIntent().getParcelableExtra(MainActivity.PROP_MOVIES);
 
@@ -36,6 +42,13 @@ public class DetailsActivity extends AppCompatActivity {
 
         int size = (int) Math.ceil(Math.sqrt(Utils.MAX_WIDTH * Utils.MAX_HEIGHT));
         Picasso.with(DetailsActivity.this).load(imageUrl).resize(size,size).into(posterImage);
+
+        movieOverview.setText(movie.getOverview());
+
+        movieReleaseDate.setText(movie.getReleaseDate());
+
+        movieRating.setText(String.valueOf(movie.getPopularity()));
+
 
 
     }
