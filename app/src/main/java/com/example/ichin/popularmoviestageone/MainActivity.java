@@ -25,7 +25,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements OnItemClickListener{
+public class MainActivity extends AppCompatActivity{
     RecyclerView movieRecyclerView;
 
     MovieViewAdapter movieAdapter;
@@ -41,13 +41,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         setContentView(R.layout.activity_main);
 
         movieRecyclerView = findViewById(R.id.rv_moviePosters);
-//        movieAdapter = new MovieViewAdapter(,R.layout.recyclerview_items,this);
-//
-//        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this,2);
-//        movieRecyclerView.setLayoutManager(layoutManager);
-//        movieRecyclerView.setAdapter(movieAdapter);
 
-//        new GetMoviesTask().execute(NetworkUtils.buildUrl());
         listener = new OnItemClickListener() {
             @Override
             public void onItemClick(Movies movie) {
@@ -60,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         MovieApiInterface movieApiService = MovieApiClient.getClient()
                 .create(MovieApiInterface.class);
 
+        //TODO refine this code
         Call<MoviesResponse> moviesResponseCall = movieApiService.getPopularMovies(PARAM_SORT,API_KEY);
         moviesResponseCall.enqueue(new Callback<MoviesResponse>() {
             @Override
@@ -76,39 +71,9 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
             @Override
             public void onFailure(Call<MoviesResponse> call, Throwable t) {
-
+                //TODO add failure content here
             }
         });
 
     }
-
-    @Override
-    public void onItemClick(Movies movie) {
-    }
-
-    //        @Override
-    //        protected String doInBackground(URL... urls) {
-    //            URL movieUrl = urls[0];
-    //            String movieResultsJson= null;
-    //            try {
-    //                movieResultsJson = NetworkUtils.getResponseFromURL(movieUrl);
-    //
-    //            } catch (IOException e) {
-    //                e.printStackTrace();
-    //            }
-    //            return movieResultsJson;
-    //        }
-    //
-    //        @Override
-    //        protected void onPreExecute() {
-    //            super.onPreExecute();
-    //        }
-    //
-    //        @Override
-    //        protected void onPostExecute(String movieResultsJson) {
-//    public class GetMoviesTask extends AsyncTask<URL,Void,String>{
-//            super.onPostExecute(movieResultsJson);
-//            Log.d("response url", movieResultsJson);
-//        }
-//    }
 }

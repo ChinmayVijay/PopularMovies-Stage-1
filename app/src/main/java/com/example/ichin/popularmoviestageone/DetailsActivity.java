@@ -1,7 +1,9 @@
 package com.example.ichin.popularmoviestageone;
 
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,6 +15,7 @@ import com.squareup.picasso.Picasso;
 public class DetailsActivity extends AppCompatActivity {
 
     private static final String IMAGE_BASE_URL=" http://image.tmdb.org/t/p/w185";
+    private static final String TAG = DetailsActivity.class.getSimpleName();
     ImageView posterImage;
     TextView movieTitle;
     Movies movie;
@@ -31,11 +34,10 @@ public class DetailsActivity extends AppCompatActivity {
 
         Picasso.with(this).setLoggingEnabled(true);
         String imageUrl = IMAGE_BASE_URL + movie.getPosterPath();
-//        Picasso.with(this).load(imageUrl).resize(300,60).into(posterImage);
-        Glide.with(this).load(imageUrl).thumbnail(0.5f)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(posterImage);
+        Log.d(TAG, imageUrl);
+//        Uri myUri = Uri.parse(imageUrl);
+//        Picasso.with(DetailsActivity.this).load(myUri).resize(300,60).into(posterImage);
+        Picasso.with(DetailsActivity.this).load(imageUrl).resize(300,60).into(posterImage);
 
     }
 }

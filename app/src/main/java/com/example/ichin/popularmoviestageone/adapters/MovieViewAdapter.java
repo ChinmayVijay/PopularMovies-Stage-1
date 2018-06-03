@@ -80,6 +80,8 @@ public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.Movi
             movieTitle.setText(movie.getTitle());
             String imageUrl = IMAGE_BASE_URL + movie.getPosterPath();
             new DownloadImageTask(moviePoster).execute(imageUrl);
+            //TODO find reason for this not working
+//            Picasso.with(context).load(imageUrl).fit().centerCrop().into(moviePoster);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -90,6 +92,7 @@ public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.Movi
         }
     }
 
+    //Workaround for Picasso Issue
     private class DownloadImageTask extends AsyncTask<String,Void,Bitmap>{
 
         ImageView imageView;
