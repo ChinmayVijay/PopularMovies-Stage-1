@@ -1,11 +1,16 @@
 package com.example.ichin.popularmoviestageone;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.ichin.popularmoviestageone.adapters.MovieViewAdapter;
@@ -24,15 +29,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity{
-    RecyclerView movieRecyclerView;
-
-    MovieViewAdapter movieAdapter;
-
     private static final String PARAM_SORT="popularity.desc";
+    public static final String PROP_MOVIES = "Movies";
     private static final String TAG = MainActivity.class.getSimpleName();
+    RecyclerView movieRecyclerView;
+    MovieViewAdapter movieAdapter;
     OnItemClickListener listener;
     PopupListener infoListener;
-    public static final String PROP_MOVIES = "Movies";
+    FloatingActionButton fabSortOptions;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,10 +45,19 @@ public class MainActivity extends AppCompatActivity{
 
         movieRecyclerView = findViewById(R.id.rv_moviePosters);
 
+        fabSortOptions = findViewById(R.id.fabSort);
+        fabSortOptions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createSortDialog();
+            }
+        });
+
+
+
         listener = new OnItemClickListener() {
             @Override
             public void onItemClick(Movies movie) {
-                Toast.makeText(MainActivity.this, "you have chosen "+movie.getTitle(), Toast.LENGTH_SHORT).show();
                 Intent detailsIntent = new Intent(MainActivity.this,DetailsActivity.class);
                 detailsIntent.putExtra(PROP_MOVIES,movie);
                 startActivity(detailsIntent);
@@ -59,6 +73,11 @@ public class MainActivity extends AppCompatActivity{
                 startActivity(popupIntent);
             }
         };
+        fetchMovies();
+
+    }
+
+    private void fetchMovies() {
         MovieApiInterface movieApiService = MovieApiClient.getClient()
                 .create(MovieApiInterface.class);
 
@@ -68,7 +87,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
                 List<Movies> allMovies = response.body().getResults();
-                movieAdapter = new MovieViewAdapter(allMovies,R.layout.recyclerview_items,getApplicationContext(),listener,infoListener);
+                movieAdapter = new MovieViewAdapter(allMovies, R.layout.recyclerview_items,getApplicationContext(),listener,infoListener);
 
                 RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
                 movieRecyclerView.setHasFixedSize(true);
@@ -82,6 +101,24 @@ public class MainActivity extends AppCompatActivity{
                 //TODO add failure content here
             }
         });
+    }
+
+    private void createSortDialog() {
+        String[] sortDialogOptions = getResources().getStringArray(R.array.sort_dialog);
+        int sortChoice = 0;
+        new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom))
+                .setTitle("Sort Movies By")
+                .setSingleChoiceItems(sortDialogOptions, sortChoice, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if(which == 1){
+                            Toast.makeText(MainActivity.this, "fetching top movies", Toast.LENGTH_SHORT).show();
+                            fetchMovies();
+
+                        }
+                    }
+                }).show();
 
     }
 }

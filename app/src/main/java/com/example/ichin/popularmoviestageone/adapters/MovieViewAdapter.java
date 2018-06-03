@@ -88,7 +88,6 @@ public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.Movi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "Yes Clicking works", Toast.LENGTH_SHORT).show();
                     listener.onItemClick(movie);
                 }
             });

@@ -27,7 +27,8 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp">
 
             <TextView
                 android:id="@+id/tv_movieTitle"
@@ -35,6 +36,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/album_title"
                 android:text="Infinity Wars"
+                android:gravity="center_vertical|center"
                 android:layout_weight="1"/>
 
             <ImageView
@@ -47,18 +49,6 @@
                 android:layout_weight="3"/>
 
         </LinearLayout>
-
-        <!--<View-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="2dp"-->
-            <!--android:background="#c0c0c0"/>-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/tv_release"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:textColor="@color/album_title"-->
-            <!--android:textSize="15dp"/>-->
 
     </LinearLayout>
 
