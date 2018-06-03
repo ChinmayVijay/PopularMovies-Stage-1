@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ichin.popularmoviestageone.DetailsActivity;
+import com.example.ichin.popularmoviestageone.MainActivity;
 import com.example.ichin.popularmoviestageone.R;
 import com.example.ichin.popularmoviestageone.listener.OnItemClickListener;
+import com.example.ichin.popularmoviestageone.listener.PopupListener;
 import com.example.ichin.popularmoviestageone.model.Movies;
+import com.example.ichin.popularmoviestageone.utilities.Utils;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -25,17 +28,19 @@ import java.util.List;
 
 public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.MovieViewHolder> {
 
-    private static final String IMAGE_BASE_URL=" http://image.tmdb.org/t/p/w185";
+    private static final String IMAGE_BASE_URL="http://image.tmdb.org/t/p/w185";
     private Context context;
     private List<Movies> moviesList;
     private int moviePosterLayout;
     private OnItemClickListener listener;
+    private PopupListener infoListener;
 
-    public MovieViewAdapter(List<Movies> mList, int layout , Context context, OnItemClickListener listener) {
+    public MovieViewAdapter(List<Movies> mList, int layout , Context context, OnItemClickListener listener, PopupListener infoListener) {
         this.context = context;
         this.moviesList = mList;
         this.moviePosterLayout = layout;
         this.listener = listener;
+        this.infoListener = infoListener;
 
     }
 
@@ -50,14 +55,7 @@ public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.Movi
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
 
-        holder.bind(moviesList.get(position),listener);
-//        holder.movieTitle.setText(moviesList.get(position).getTitle());
-////        Picasso.with(this).load("http://cdn.journaldev.com/wp-content/uploads/2017/01/android-constraint-layout-sdk-tool-install.png").placeholder(R.drawable.placeholder).into(imageView);
-//        String imageUrl = IMAGE_BASE_URL + moviesList.get(position).getPosterPath();
-//        Log.d("Poster",imageUrl);
-//        new DownloadImageTask(holder.moviePoster).execute(imageUrl);
-////        Picasso.with(context).load(imageUrl).fit().centerCrop().into(holder.moviePoster);
-////        Picasso.with(context).load(imageUrl).into(holder.moviePoster);
+        holder.bind(moviesList.get(position),listener,infoListener);
 
     }
 
@@ -67,21 +65,26 @@ public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.Movi
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder{
-        public TextView movieTitle;
-        public ImageView moviePoster;
+        TextView movieTitle;
+        ImageView moviePoster;
+        ImageView info;
+        TextView releaseDate;
 
         public MovieViewHolder(View itemView) {
             super(itemView);
             this.movieTitle = itemView.findViewById(R.id.tv_movieTitle);
             this.moviePoster = itemView.findViewById(R.id.iv_movieImage);
+            this.info = itemView.findViewById(R.id.iv_info);
+//            this.releaseDate = itemView.findViewById(R.id.tv_release);
+
         }
 
-        public void bind(final Movies movie,final OnItemClickListener listener ){
+        public void bind(final Movies movie,final OnItemClickListener listener, final PopupListener popupListener ){
             movieTitle.setText(movie.getTitle());
-            String imageUrl = IMAGE_BASE_URL + movie.getPosterPath();
-            new DownloadImageTask(moviePoster).execute(imageUrl);
-            //TODO find reason for this not working
+            String imageUrl = Utils.IMAGE_BASE_URL + movie.getPosterPath();
 //            Picasso.with(context).load(imageUrl).fit().centerCrop().into(moviePoster);
+            int size = (int) Math.ceil(Math.sqrt(Utils.MAX_WIDTH * Utils.MAX_HEIGHT));
+            Picasso.with(context).load(imageUrl).resize(size,size).into(moviePoster);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -89,35 +92,17 @@ public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.Movi
                     listener.onItemClick(movie);
                 }
             });
+
+//            releaseDate.setText(movie.getReleaseDate());
+            info.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popupListener.onInfoClick(movie);
+                }
+            }) ;
+
+
         }
     }
 
-    //Workaround for Picasso Issue
-    private class DownloadImageTask extends AsyncTask<String,Void,Bitmap>{
-
-        ImageView imageView;
-
-        public DownloadImageTask(ImageView imageView) {
-            this.imageView = imageView;
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... strings) {
-            String urlDisplay = strings[0];
-            Bitmap moviePoster = null;
-
-            try {
-                InputStream in = new java.net.URL(urlDisplay).openStream();
-                moviePoster = BitmapFactory.decodeStream(in);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return moviePoster;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            imageView.setImageBitmap(bitmap);
-        }
-    }
 }
