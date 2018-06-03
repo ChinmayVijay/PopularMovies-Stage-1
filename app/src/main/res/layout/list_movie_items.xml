@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="7dp"
+    app:contentPadding="7dp"
+    app:cardCornerRadius="7dp"
+    app:cardMaxElevation="7dp"
+    android:layout_gravity="center"
+    android:layout_margin="7dp"
+    app:cardBackgroundColor="@color/viewBg"
+    >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/iv_movieImage"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:clickable="true"
+            android:scaleType="fitXY"
+            />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_movieTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/album_title"
+                android:textSize="15dp"
+                android:text="Infinity Wars"
+                android:layout_weight="1"/>
+            <ImageView
+                android:id="@+id/iv_info"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:textColor="@color/album_title"
+                android:textSize="15dp"
+                android:background="@drawable/info"
+                android:layout_weight="3"/>
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_release"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="15dp"/>
+
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
