@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">PopularMovieStageOne</string>
+    <string-array name="sort_dialog">
+        <item>popular movies</item>
+        <item>top rated movies</item>
+    </string-array>
 </resources>

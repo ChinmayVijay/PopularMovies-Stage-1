@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/popupLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MoviePopupWindow"
+    android:layout_margin="10dp"
+    android:scrollbars="vertical">
+    <ImageView
+        android:id="@+id/popupPoster"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_weight="3"
+        android:layout_margin="5dp"
+        />
+
+    <TextView
+        android:id="@+id/tv_pop_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:layout_weight="1"
+        />
+
+    <TextView
+        android:id="@+id/tv_movieInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="Movie Info Window"
+        android:layout_weight="3"
+        />
+</LinearLayout>
