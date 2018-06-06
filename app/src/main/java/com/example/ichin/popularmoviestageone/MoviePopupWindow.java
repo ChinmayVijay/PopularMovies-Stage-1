@@ -14,10 +14,10 @@ public class MoviePopupWindow extends AppCompatActivity {
     private static final int MAX_WIDTH = 1024;
     private static final int MAX_HEIGHT = 768;
     private static final String IMAGE_BASE_URL="http://image.tmdb.org/t/p/w185";
-    Movies movie;
-    TextView movieInfo;
-    TextView popTitle;
-    ImageView popupPoster;
+    private Movies movie;
+    private TextView movieInfo;
+    private TextView popTitle;
+    private ImageView popupPoster;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class MoviePopupWindow extends AppCompatActivity {
 
         int size = (int) Math.ceil(Math.sqrt(MAX_WIDTH * MAX_HEIGHT));
         String imageUrl = IMAGE_BASE_URL + movie.getPosterPath();
-        Picasso.with(MoviePopupWindow.this).load(imageUrl).resize(size,size).into(popupPoster);
+        Picasso.get().load(imageUrl).resize(size,size).into(popupPoster);
 
 
 
