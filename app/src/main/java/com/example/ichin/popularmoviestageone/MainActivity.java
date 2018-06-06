@@ -32,11 +32,11 @@ public class MainActivity extends AppCompatActivity{
     private static final String PARAM_SORT="popularity.desc";
     public static final String PROP_MOVIES = "Movies";
     private static final String TAG = MainActivity.class.getSimpleName();
-    RecyclerView movieRecyclerView;
-    MovieViewAdapter movieAdapter;
-    OnItemClickListener listener;
-    PopupListener infoListener;
-    FloatingActionButton fabSortOptions;
+    private RecyclerView movieRecyclerView;
+    private MovieViewAdapter movieAdapter;
+    private OnItemClickListener listener;
+    private PopupListener infoListener;
+    private FloatingActionButton fabSortOptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,13 +73,13 @@ public class MainActivity extends AppCompatActivity{
                 startActivity(popupIntent);
             }
         };
-        fetchMovies();
+//        fetchPopularMovies();
 
+        fetchTopRatedMovies();
     }
 
-    private void fetchMovies() {
-        MovieApiInterface movieApiService = MovieApiClient.getClient()
-                .create(MovieApiInterface.class);
+    private void fetchPopularMovies() {
+        MovieApiInterface movieApiService = getMovieApiInterface();
 
         //TODO refine this code
         Call<MoviesResponse> moviesResponseCall = movieApiService.getPopularMovies(PARAM_SORT, Utils.API_KEY);
@@ -103,6 +103,39 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 
+    private MovieApiInterface getMovieApiInterface() {
+        return MovieApiClient.getClient()
+                    .create(MovieApiInterface.class);
+    }
+
+    private void fetchTopRatedMovies(){
+        MovieApiInterface movieApiService = getMovieApiInterface();
+
+        Call<MoviesResponse> moviesResponseCall = movieApiService.getTopRatedMovies(Utils.API_KEY);
+        moviesResponseCall.enqueue(new Callback<MoviesResponse>() {
+            @Override
+            public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+
+                List<Movies> allMovies = response.body().getResults();
+                movieAdapter = new MovieViewAdapter(allMovies, R.layout.recyclerview_items,getApplicationContext(),listener,infoListener);
+
+                RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
+                movieRecyclerView.setHasFixedSize(true);
+                movieRecyclerView.setLayoutManager(layoutManager);
+                movieRecyclerView.setAdapter(movieAdapter);
+                Log.d(TAG,"total movies fetched"+allMovies.size());
+
+            }
+
+            @Override
+            public void onFailure(Call<MoviesResponse> call, Throwable t) {
+
+            }
+        });
+
+
+    }
+
     private void createSortDialog() {
         String[] sortDialogOptions = getResources().getStringArray(R.array.sort_dialog);
         int sortChoice = 0;
@@ -112,10 +145,21 @@ public class MainActivity extends AppCompatActivity{
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        if(which == 1){
-                            Toast.makeText(MainActivity.this, "fetching top movies", Toast.LENGTH_SHORT).show();
-                            fetchMovies();
+                        switch (which) {
+                            case 1:
+                                Toast.makeText(MainActivity.this, "fetching popular movies", Toast.LENGTH_SHORT).show();
+                                fetchPopularMovies();
 
+                                dialog.cancel();
+                                break;
+                            case 2:
+                                Toast.makeText(MainActivity.this, "fetching top rated movies", Toast.LENGTH_SHORT).show();
+                                fetchTopRatedMovies();
+                                dialog.cancel();
+                                break;
+                            default:
+                                dialog.cancel();
+                                break;
                         }
                     }
                 }).show();

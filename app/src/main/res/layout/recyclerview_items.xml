@@ -23,7 +23,7 @@
             android:layout_height="160dp"
             android:clickable="true"
             android:scaleType="fitXY"
-            />
+            android:focusable="true" />
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"

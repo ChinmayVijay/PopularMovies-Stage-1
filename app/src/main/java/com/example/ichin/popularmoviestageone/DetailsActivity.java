@@ -13,12 +13,12 @@ import com.squareup.picasso.Picasso;
 public class DetailsActivity extends AppCompatActivity {
 
     private static final String TAG = DetailsActivity.class.getSimpleName();
-    ImageView posterImage;
-    TextView movieTitle;
-    TextView movieOverview;
-    TextView movieReleaseDate;
-    TextView movieRating;
-    Movies movie;
+    private ImageView posterImage;
+    private TextView movieTitle;
+    private TextView movieOverview;
+    private TextView movieReleaseDate;
+    private TextView movieRating;
+    private Movies movie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,18 +36,21 @@ public class DetailsActivity extends AppCompatActivity {
 
         movieTitle.setText(movie.getTitle());
 
-        Picasso.with(this).setLoggingEnabled(true);
+        Picasso.get().setLoggingEnabled(true);
         String imageUrl = Utils.IMAGE_BASE_URL + movie.getPosterPath();
         Log.d(TAG, imageUrl);
 
         int size = (int) Math.ceil(Math.sqrt(Utils.MAX_WIDTH * Utils.MAX_HEIGHT));
-        Picasso.with(DetailsActivity.this).load(imageUrl).resize(size,size).into(posterImage);
+//        Picasso.with(DetailsActivity.this).load(imageUrl).resize(size,size).into(posterImage);
+        Picasso.get().load(imageUrl).resize(size,size).into(posterImage);
 
         movieOverview.setText(movie.getOverview());
 
         movieReleaseDate.setText(movie.getReleaseDate());
 
-        movieRating.setText(String.valueOf(movie.getPopularity()));
+        movieRating.setText(String.valueOf(movie.getVoteAverage()));
+        movieRating.append("/10.0");
+
 
 
 
