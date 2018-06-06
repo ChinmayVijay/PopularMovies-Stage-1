@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.example.ichin.popularmoviestageone.adapters.MovieViewAdapter;
 import com.example.ichin.popularmoviestageone.listener.OnItemClickListener;
-import com.example.ichin.popularmoviestageone.listener.PopupListener;
 import com.example.ichin.popularmoviestageone.model.Movies;
 import com.example.ichin.popularmoviestageone.model.MoviesResponse;
 import com.example.ichin.popularmoviestageone.rest.MovieApiClient;
@@ -35,7 +34,6 @@ public class MainActivity extends AppCompatActivity{
     private RecyclerView movieRecyclerView;
     private MovieViewAdapter movieAdapter;
     private OnItemClickListener listener;
-    private PopupListener infoListener;
     private FloatingActionButton fabSortOptions;
 
     @Override
@@ -64,15 +62,6 @@ public class MainActivity extends AppCompatActivity{
             }
         };
 
-        infoListener = new PopupListener() {
-            @Override
-            public void onInfoClick(Movies movie) {
-                Intent popupIntent = new Intent(MainActivity.this,MoviePopupWindow.class);
-                popupIntent.putExtra(PROP_MOVIES,movie);
-
-                startActivity(popupIntent);
-            }
-        };
 //        fetchPopularMovies();
 
         fetchTopRatedMovies();
@@ -87,7 +76,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
                 List<Movies> allMovies = response.body().getResults();
-                movieAdapter = new MovieViewAdapter(allMovies, R.layout.recyclerview_items,getApplicationContext(),listener,infoListener);
+                movieAdapter = new MovieViewAdapter(allMovies, R.layout.recyclerview_items,getApplicationContext(),listener);
 
                 RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
                 movieRecyclerView.setHasFixedSize(true);
@@ -117,7 +106,7 @@ public class MainActivity extends AppCompatActivity{
             public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
 
                 List<Movies> allMovies = response.body().getResults();
-                movieAdapter = new MovieViewAdapter(allMovies, R.layout.recyclerview_items,getApplicationContext(),listener,infoListener);
+                movieAdapter = new MovieViewAdapter(allMovies, R.layout.recyclerview_items,getApplicationContext(),listener);
 
                 RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
                 movieRecyclerView.setHasFixedSize(true);

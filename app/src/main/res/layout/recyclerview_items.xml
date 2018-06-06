@@ -15,7 +15,8 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <ImageView
             android:id="@+id/iv_movieImage"
@@ -23,32 +24,20 @@
             android:layout_height="160dp"
             android:clickable="true"
             android:scaleType="fitXY"
-            android:focusable="true" />
-        <LinearLayout
-            android:orientation="horizontal"
+            android:focusable="true"
+            android:layout_margin="5dp"
+            />
+
+        <TextView
+            android:id="@+id/tv_movieTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp">
-
-            <TextView
-                android:id="@+id/tv_movieTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/album_title"
-                android:text="Infinity Wars"
-                android:gravity="center_vertical|center"
-                android:layout_weight="1"/>
-
-            <ImageView
-                android:id="@+id/iv_info"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:textColor="@color/album_title"
-                android:scaleType="fitXY"
-                android:background="@drawable/info"
-                android:layout_weight="3"/>
-
-        </LinearLayout>
+            android:textColor="@color/album_title"
+            android:text="Infinity Wars"
+            android:textStyle="bold"
+            android:gravity="center_vertical|center"
+            android:layout_margin="5dp"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 

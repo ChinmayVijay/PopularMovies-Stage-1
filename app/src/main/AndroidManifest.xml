@@ -20,8 +20,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".DetailsActivity" />
-        <activity android:name=".MoviePopupWindow"
-            android:theme="@style/AppTheme.PopupTheme"/>
     </application>
 
 </manifest>

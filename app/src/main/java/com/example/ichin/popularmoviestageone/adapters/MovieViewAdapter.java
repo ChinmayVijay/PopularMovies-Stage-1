@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.example.ichin.popularmoviestageone.R;
 import com.example.ichin.popularmoviestageone.listener.OnItemClickListener;
-import com.example.ichin.popularmoviestageone.listener.PopupListener;
 import com.example.ichin.popularmoviestageone.model.Movies;
 import com.example.ichin.popularmoviestageone.utilities.Utils;
 import com.squareup.picasso.Picasso;
@@ -24,14 +23,12 @@ public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.Movi
     private List<Movies> moviesList;
     private int moviePosterLayout;
     private OnItemClickListener listener;
-    private PopupListener infoListener;
 
-    public MovieViewAdapter(List<Movies> mList, int layout , Context context, OnItemClickListener listener, PopupListener infoListener) {
+    public MovieViewAdapter(List<Movies> mList, int layout , Context context, OnItemClickListener listener) {
         this.context = context;
         this.moviesList = mList;
         this.moviePosterLayout = layout;
         this.listener = listener;
-        this.infoListener = infoListener;
 
     }
 
@@ -45,7 +42,7 @@ public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.Movi
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
 
-        holder.bind(moviesList.get(position),listener,infoListener);
+        holder.bind(moviesList.get(position),listener);
 
     }
 
@@ -57,20 +54,17 @@ public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.Movi
     public class MovieViewHolder extends RecyclerView.ViewHolder{
         TextView movieTitle;
         ImageView moviePoster;
-        ImageView info;
 
         MovieViewHolder(View itemView) {
             super(itemView);
             this.movieTitle = itemView.findViewById(R.id.tv_movieTitle);
             this.moviePoster = itemView.findViewById(R.id.iv_movieImage);
-            this.info = itemView.findViewById(R.id.iv_info);
 
         }
 
-        void bind(final Movies movie, final OnItemClickListener listener, final PopupListener popupListener){
+        void bind(final Movies movie, final OnItemClickListener listener){
             movieTitle.setText(movie.getTitle());
             String imageUrl = Utils.IMAGE_BASE_URL + movie.getPosterPath();
-//            Picasso.with(context).load(imageUrl).fit().centerCrop().into(moviePoster);
             int size = (int) Math.ceil(Math.sqrt(Utils.MAX_WIDTH * Utils.MAX_HEIGHT));
             Picasso.get().load(imageUrl).resize(size,size).into(moviePoster);
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -79,13 +73,6 @@ public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.Movi
                     listener.onItemClick(movie);
                 }
             });
-
-            info.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    popupListener.onInfoClick(movie);
-                }
-            }) ;
 
 
         }
