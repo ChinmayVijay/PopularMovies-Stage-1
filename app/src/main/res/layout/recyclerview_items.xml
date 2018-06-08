@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/cv_movie"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -27,12 +26,12 @@
             android:scaleType="fitXY"
             android:focusable="true"
             android:layout_margin="5dp"
-            />
+            android:contentDescription="@string/txt_movie_poster"/>
 
         <TextView
             android:id="@+id/tv_movieTitle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:textColor="@color/album_title"
             android:text="@string/txt_sample"
             android:textStyle="bold"

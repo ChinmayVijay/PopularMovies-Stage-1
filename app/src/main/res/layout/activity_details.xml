@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <GridLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".DetailsActivity"
@@ -11,25 +16,24 @@
     <ImageView
         android:id="@+id/iv_poster"
         android:layout_width="0dp"
-        android:layout_height="200dp"
+        android:layout_height="160dp"
         android:layout_gravity="fill_horizontal"
         android:layout_columnSpan="2"
         android:layout_marginBottom="10dp"
-        />
+        android:contentDescription="@string/txt_movie_poster" />
 
     <TextView
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:textStyle="bold"
-        android:text="Title"/>
+        android:text="@string/txt_title"/>
     <TextView
         android:id="@+id/tv_movie_title_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Avengers Infinity Wars"
+        android:text="@string/txt_sample"
         android:gravity="center_vertical"
-        android:textColor="#D0583B"
 
         android:layout_gravity="fill_horizontal|center_vertical"
         />
@@ -38,13 +42,12 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:textStyle="bold"
-        android:text="Overview"/>
+        android:text="@string/txt_overview"/>
     <TextView
         android:id="@+id/tv_movie_overview_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Avengers Infinity Wars"
-        android:textColor="#D0583B"
+        android:text="@string/txt_sample"
         android:gravity="center_vertical"
         android:layout_gravity="fill_horizontal|center_vertical"
         />
@@ -53,15 +56,14 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:textStyle="bold"
-        android:text="User Rating"/>
+        android:text="@string/txt_user_rating"/>
     <TextView
         android:id="@+id/tv_movie_user_rating_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Avengers Infinity Wars"
+        android:text="@string/txt_sample"
         android:gravity="center_vertical"
         android:layout_gravity="fill_horizontal|center_vertical"
-        android:textColor="#D0583B"
 
         />
     <TextView
@@ -69,15 +71,15 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:textStyle="bold"
-        android:text="Release Date"/>
+        android:text="@string/txt_release_date"/>
     <TextView
         android:id="@+id/tv_movie_release_date_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Avengers Infinity Wars"
+        android:text="@string/txt_sample"
         android:gravity="center_vertical"
         android:layout_gravity="fill_horizontal|center_vertical"
-        android:textColor="#D0583B"
         />
 
 </GridLayout>
+</ScrollView>

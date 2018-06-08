@@ -6,13 +6,14 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ichin.popularmoviestageone.adapters.MovieViewAdapter;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity{
         fabSortOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createSortDialog();
+                showSortDialog();
             }
         });
 
@@ -74,12 +75,31 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater =getMenuInflater();
+        menuInflater.inflate(R.menu.refresh_menu,menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.refresh_action:
+                if(isTopRatedAlready) fetchTopRatedMovies();
+                else if(isPopularAlready) fetchPopularMovies();
+                break;
+        }
+        return true;
+    }
+
     private void fetchPopularMovies() {
         layout_original.setVisibility(View.VISIBLE);
         layout_error.setVisibility(View.GONE);
+        fabSortOptions.setVisibility(View.VISIBLE);
         MovieApiInterface movieApiService = getMovieApiInterface();
 
-        //TODO refine this code
         Call<MoviesResponse> moviesResponseCall = movieApiService.getPopularMovies(PARAM_SORT, Utils.API_KEY);
         moviesResponseCall.enqueue(new Callback<MoviesResponse>() {
             @Override
@@ -96,7 +116,6 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public void onFailure(Call<MoviesResponse> call, Throwable t) {
-                //TODO add failure content here
                 layout_original.setVisibility(View.GONE);
                 layout_error.setVisibility(View.VISIBLE);
             }
@@ -114,6 +133,7 @@ public class MainActivity extends AppCompatActivity{
     private void fetchTopRatedMovies(){
         layout_original.setVisibility(View.VISIBLE);
         layout_error.setVisibility(View.GONE);
+        fabSortOptions.setVisibility(View.VISIBLE);
         MovieApiInterface movieApiService = getMovieApiInterface();
 
         Call<MoviesResponse> moviesResponseCall = movieApiService.getTopRatedMovies(Utils.API_KEY);
@@ -137,8 +157,6 @@ public class MainActivity extends AppCompatActivity{
                 fabSortOptions.setVisibility(View.GONE);
                 layout_original.setVisibility(View.GONE);
                 layout_error.setVisibility(View.VISIBLE);
-
-
             }
         });
         isTopRatedAlready = true;
@@ -147,33 +165,33 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-    private void createSortDialog() {
-        String[] sortDialogOptions = getResources().getStringArray(R.array.sort_dialog);
-        int sortChoice = 0;
-        new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom))
-                .setTitle("Sort Movies By")
-                .setSingleChoiceItems(sortDialogOptions, sortChoice, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+    private void showSortDialog() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        dialogBuilder.setTitle("Sort Movies By");
+        dialogBuilder.setItems(getResources().getStringArray(R.array.sort_dialog), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        Toast.makeText(MainActivity.this, "fetching popular movies", Toast.LENGTH_SHORT).show();
+                        if(!isPopularAlready) fetchPopularMovies();
 
-                        switch (which) {
-                            case 1:
-                                Toast.makeText(MainActivity.this, "fetching popular movies", Toast.LENGTH_SHORT).show();
-                                if(!isPopularAlready) fetchPopularMovies();
-
-                                dialog.cancel();
-                                break;
-                            case 2:
-                                Toast.makeText(MainActivity.this, "fetching top rated movies", Toast.LENGTH_SHORT).show();
-                                if(!isTopRatedAlready) fetchTopRatedMovies();
-                                dialog.cancel();
-                                break;
-                            default:
-                                dialog.cancel();
-                                break;
-                        }
-                    }
-                }).show();
+                        dialog.cancel();
+                        break;
+                    case 1:
+                        Toast.makeText(MainActivity.this, "fetching top rated movies", Toast.LENGTH_SHORT).show();
+                        if(!isTopRatedAlready) fetchTopRatedMovies();
+                        dialog.cancel();
+                        break;
+                    default:
+                        dialog.cancel();
+                        break;
+                }
+            }
+        });
+        AlertDialog sortDialog = dialogBuilder.create();
+        sortDialog.show();
 
     }
+
 }
