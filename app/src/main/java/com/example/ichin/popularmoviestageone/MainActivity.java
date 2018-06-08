@@ -11,6 +11,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ichin.popularmoviestageone.adapters.MovieViewAdapter;
@@ -35,6 +37,11 @@ public class MainActivity extends AppCompatActivity{
     private MovieViewAdapter movieAdapter;
     private OnItemClickListener listener;
     private FloatingActionButton fabSortOptions;
+    private boolean isPopularAlready = false;
+    private boolean isTopRatedAlready = false;
+    private RelativeLayout layout_error;
+    private RelativeLayout layout_original;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +58,8 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-
+        layout_original = findViewById(R.id.rl_original);
+        layout_error = findViewById(R.id.rl_error);
 
         listener = new OnItemClickListener() {
             @Override
@@ -62,12 +70,13 @@ public class MainActivity extends AppCompatActivity{
             }
         };
 
-//        fetchPopularMovies();
+        fetchPopularMovies();
 
-        fetchTopRatedMovies();
     }
 
     private void fetchPopularMovies() {
+        layout_original.setVisibility(View.VISIBLE);
+        layout_error.setVisibility(View.GONE);
         MovieApiInterface movieApiService = getMovieApiInterface();
 
         //TODO refine this code
@@ -88,8 +97,13 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onFailure(Call<MoviesResponse> call, Throwable t) {
                 //TODO add failure content here
+                layout_original.setVisibility(View.GONE);
+                layout_error.setVisibility(View.VISIBLE);
             }
         });
+
+        isPopularAlready = true;
+        isTopRatedAlready = false;
     }
 
     private MovieApiInterface getMovieApiInterface() {
@@ -98,6 +112,8 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void fetchTopRatedMovies(){
+        layout_original.setVisibility(View.VISIBLE);
+        layout_error.setVisibility(View.GONE);
         MovieApiInterface movieApiService = getMovieApiInterface();
 
         Call<MoviesResponse> moviesResponseCall = movieApiService.getTopRatedMovies(Utils.API_KEY);
@@ -118,9 +134,15 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                fabSortOptions.setVisibility(View.GONE);
+                layout_original.setVisibility(View.GONE);
+                layout_error.setVisibility(View.VISIBLE);
+
 
             }
         });
+        isTopRatedAlready = true;
+        isPopularAlready = false;
 
 
     }
@@ -137,13 +159,13 @@ public class MainActivity extends AppCompatActivity{
                         switch (which) {
                             case 1:
                                 Toast.makeText(MainActivity.this, "fetching popular movies", Toast.LENGTH_SHORT).show();
-                                fetchPopularMovies();
+                                if(!isPopularAlready) fetchPopularMovies();
 
                                 dialog.cancel();
                                 break;
                             case 2:
                                 Toast.makeText(MainActivity.this, "fetching top rated movies", Toast.LENGTH_SHORT).show();
-                                fetchTopRatedMovies();
+                                if(!isTopRatedAlready) fetchTopRatedMovies();
                                 dialog.cancel();
                                 break;
                             default:

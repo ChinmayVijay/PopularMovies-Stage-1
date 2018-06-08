@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">Movie Mania</string>
+    <string name="txt_movie_title">Title</string>
+    <string name="txt_movie_overview">Overview</string>
+    <string name="txt_movie_user_rating">User Rating</string>
+    <string name="txt_movie_release_date">Release Date</string>
+    <string name="txt_sample">Infinity Wars</string>
+    <string name="txt_error_msg">Please check your Internet Connection. Failed to fetch movie data</string>
     <string-array name="sort_dialog">
         <item>none</item>
         <item>popular movies</item>

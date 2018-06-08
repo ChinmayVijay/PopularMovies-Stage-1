@@ -2,6 +2,7 @@ package com.example.ichin.popularmoviestageone.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,7 +68,7 @@ public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.Movi
             String imageUrl = Utils.IMAGE_BASE_URL + movie.getPosterPath();
             int size = (int) Math.ceil(Math.sqrt(Utils.MAX_WIDTH * Utils.MAX_HEIGHT));
             Picasso.get().load(imageUrl).resize(size,size).into(moviePoster);
-            itemView.setOnClickListener(new View.OnClickListener() {
+            moviePoster.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onItemClick(movie);
