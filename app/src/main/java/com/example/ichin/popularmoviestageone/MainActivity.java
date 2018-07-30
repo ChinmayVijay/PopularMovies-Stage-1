@@ -106,7 +106,6 @@ public class MainActivity extends AppCompatActivity{
             public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
                 List<Movies> allMovies = response.body().getResults();
                 movieAdapter = new MovieViewAdapter(allMovies, R.layout.recyclerview_items,getApplicationContext(),listener);
-
                 RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
                 movieRecyclerView.setHasFixedSize(true);
                 movieRecyclerView.setLayoutManager(layoutManager);
