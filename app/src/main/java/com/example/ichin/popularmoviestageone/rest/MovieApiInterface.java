@@ -1,5 +1,6 @@
 package com.example.ichin.popularmoviestageone.rest;
 
+import com.example.ichin.popularmoviestageone.model.MovieReviewsResponse;
 import com.example.ichin.popularmoviestageone.model.MovieTrailerResponse;
 import com.example.ichin.popularmoviestageone.model.MoviesResponse;
 
@@ -17,5 +18,10 @@ public interface MovieApiInterface {
 
     @GET("movie/{id}/videos")
     Call<MovieTrailerResponse> getMovieTrailers(@Path("id") long movieId, @Query("api_key") String apiKey);
+
+    @GET("movie/{id}/reviews")
+    Call<MovieReviewsResponse> getMovieReviews(@Path("id") long movieId, @Query("api_key") String apiKey);
+
+
 
 }

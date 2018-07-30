@@ -1,18 +1,24 @@
 package com.example.ichin.popularmoviestageone;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.ichin.popularmoviestageone.adapters.MovieReviewAdapter;
 import com.example.ichin.popularmoviestageone.adapters.TrailerViewAdapter;
 import com.example.ichin.popularmoviestageone.listener.OnItemClickListener;
+import com.example.ichin.popularmoviestageone.model.MovieReviewsResponse;
 import com.example.ichin.popularmoviestageone.model.MovieTrailerResponse;
 import com.example.ichin.popularmoviestageone.model.Movies;
 import com.example.ichin.popularmoviestageone.model.Result;
+import com.example.ichin.popularmoviestageone.model.ReviewResult;
 import com.example.ichin.popularmoviestageone.rest.MovieApiClient;
 import com.example.ichin.popularmoviestageone.rest.MovieApiInterface;
 import com.example.ichin.popularmoviestageone.utilities.Utils;
@@ -39,6 +45,8 @@ public class DetailsActivity extends AppCompatActivity {
     private TrailerViewAdapter trailerViewAdapter;
     private OnItemClickListener mListener;
     private RecyclerView trailerRecyclerView;
+    private RecyclerView reviewRecyclerView;
+    private MovieReviewAdapter movieReviewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +61,7 @@ public class DetailsActivity extends AppCompatActivity {
         movieRating = findViewById(R.id.tv_movie_detail_user_rating_text);
 
         trailerRecyclerView = findViewById(R.id.rv_movieTrailers);
+        reviewRecyclerView = findViewById(R.id.rv_movieReviews);
 
         movie = getIntent().getParcelableExtra(MainActivity.PROP_MOVIES);
 
@@ -75,7 +84,44 @@ public class DetailsActivity extends AppCompatActivity {
 
 
         getMoviesTrailer();
+        getMovieReviews();
 
+        mListener = new OnItemClickListener() {
+            @Override
+            public void onItemClick(Movies movie) {
+
+            }
+
+            @Override
+            public void onYoutubeItemClick(String key) {
+                Uri uri = Uri.parse("https://www.youtube.com/watch?v=" +key);
+                Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+                startActivity(intent);
+            }
+        };
+
+    }
+
+    private void getMovieReviews() {
+        MovieApiInterface movieApiService = MovieApiClient.getClient().create(MovieApiInterface.class);
+        Call<MovieReviewsResponse> movieReviewsResponseCall = movieApiService.getMovieReviews(movie.getId(),API_KEY);
+        movieReviewsResponseCall.enqueue(new Callback<MovieReviewsResponse>() {
+            @Override
+            public void onResponse(Call<MovieReviewsResponse> call, Response<MovieReviewsResponse> response) {
+                movieId = response.body().getId();
+                List<ReviewResult> movieReviewResult = response.body().getReviewResult();
+                movieReviewAdapter = new MovieReviewAdapter(getApplicationContext(),movieReviewResult, R.layout.recyclerview_trailers,mListener);
+                RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),1);
+                reviewRecyclerView.setLayoutManager(layoutManager);
+                reviewRecyclerView.setHasFixedSize(true);
+                reviewRecyclerView.setAdapter(movieReviewAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<MovieReviewsResponse> call, Throwable t) {
+
+            }
+        });
     }
 
     private void getMoviesTrailer() {
@@ -89,8 +135,8 @@ public class DetailsActivity extends AppCompatActivity {
                 List<Result> movieTrailerResult = response.body().getResults();
                 Log.d(TAG, "total trailers: " + movieTrailerResult.size());
                 Log.d(TAG, "total trailers: " + "movie id: "+movieId);
-                trailerViewAdapter = new TrailerViewAdapter(getApplicationContext(),movieTrailerResult,mListener,R.layout.recyclerview_trailers);
-                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+                trailerViewAdapter = new TrailerViewAdapter(getApplicationContext(),movieTrailerResult,mListener,R.layout.recyclerview_items);
+                RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
                 trailerRecyclerView.setLayoutManager(layoutManager);
                 trailerRecyclerView.setHasFixedSize(true);
                 trailerRecyclerView.setAdapter(trailerViewAdapter);

@@ -69,6 +69,11 @@ public class MainActivity extends AppCompatActivity{
                 detailsIntent.putExtra(PROP_MOVIES,movie);
                 startActivity(detailsIntent);
             }
+
+            @Override
+            public void onYoutubeItemClick(String key) {
+
+            }
         };
 
         fetchPopularMovies();
