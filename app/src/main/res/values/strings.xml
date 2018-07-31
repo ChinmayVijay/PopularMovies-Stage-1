@@ -8,8 +8,15 @@
     <string name="txt_user_rating">User Rating</string>
     <string name="txt_release_date">Release Date</string>
     <string name="txt_menu_refresh">refresh</string>
-    <string name="tatti_text">asdfbajskfhkajshflalfjlasfalsflasjfalsjf fasj;fj;asjf;ljas;fj;lsajf;s;lajf;asjf;ljasf asf;lkasjfjask;jf;lasj;fljasl;jf;lasjf;ljsa;fljasl;fj;asjf afaklfj;asjf;ljdasl;fjasl;djf;lajsf;ljas;lfjl;asjfas f asjfkasj;fljd;lfjiefp9wf;jwelk;fj;dj;fljw ffanhflkkdnhflkjds;lgsl;dljg;sdjgf as fanfkldasnflkndskfj\'sd fdsnfjlksnhdflkjsdo;fj\'asdf ajbfueonvkf;\' vjjopjknlaui chinmaydvknsd;kgv;lsdfj</string>
+    <string name="content_text">Lorem ipsum </string>
     <string name="no_fav_mov_found">Please choose different option no favorite movies marked yet.</string>
+    <string name="sharetrailer">shareTrailer</string>
+    <string name="trailers">Trailers</string>
+    <string name="reviews">Reviews</string>
+    <string name="author">Author</string>
+    <string name="topkek">TopKek</string>
+    <string name="content">Content</string>
+    <string name="review_link">Review Link</string>
     <string-array name="sort_dialog">
         <item>popular movies</item>
         <item>top rated movies</item>

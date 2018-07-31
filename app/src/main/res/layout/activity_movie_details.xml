@@ -30,7 +30,7 @@
                 android:scaleType="center"
                 android:adjustViewBounds="true"
                 app:layout_collapseMode="parallax"
-                android:contentDescription="Image" />
+                android:contentDescription="@string/txt_movie_poster" />
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar_details"
                 android:layout_width="match_parent"
@@ -128,7 +128,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Trailers"
+                android:text="@string/trailers"
                 android:textStyle="bold"
                 android:padding="8dp"/>
             <android.support.v7.widget.RecyclerView
@@ -141,7 +141,7 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:padding="8dp"
-                android:text="Reviews"/>
+                android:text="@string/reviews"/>
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_movieReviews"
                 android:layout_width="match_parent"

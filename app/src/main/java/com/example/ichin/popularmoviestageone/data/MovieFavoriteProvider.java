@@ -7,12 +7,9 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Movie;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import com.google.gson.internal.bind.SqlDateTypeAdapter;
 
 import static com.example.ichin.popularmoviestageone.data.MovieContract.MovieListEntry.CONTENT_ITEM_TYPE;
 import static com.example.ichin.popularmoviestageone.data.MovieContract.MovieListEntry.CONTENT_TYPE;

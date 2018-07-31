@@ -52,7 +52,7 @@
                 android:layout_margin="5dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_share_trailer"
-                />
+                android:contentDescription="@string/sharetrailer" />
 
         </LinearLayout>
 

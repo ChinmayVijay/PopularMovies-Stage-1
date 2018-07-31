@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ichin.popularmoviestageone.R;
-import com.example.ichin.popularmoviestageone.listener.OnItemClickListener;
 import com.example.ichin.popularmoviestageone.listener.TrailerListener;
 import com.example.ichin.popularmoviestageone.model.Result;
 import com.example.ichin.popularmoviestageone.utilities.Utils;

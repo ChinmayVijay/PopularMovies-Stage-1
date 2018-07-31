@@ -29,7 +29,7 @@
                     android:layout_margin="5dp"
                     android:textStyle="bold"
                     android:textColor="#000"
-                    android:text="Author"
+                    android:text="@string/author"
                     />
                 <TextView
                     android:id="@+id/tv_movie_author_text"
@@ -39,7 +39,7 @@
                     android:layout_margin="5dp"
                     android:textStyle="bold"
                     android:textColor="#000"
-                    android:text="TopKek"
+                    android:text="@string/topkek"
                     />
 
         </LinearLayout>
@@ -56,7 +56,7 @@
                 android:layout_margin="5dp"
                 android:textStyle="bold"
                 android:textColor="#000"
-                android:text="Content"
+                android:text="@string/content"
                 />
             <TextView
                 android:id="@+id/tv_movie_content_text"
@@ -66,7 +66,7 @@
                 android:layout_margin="5dp"
                 android:textStyle="bold"
                 android:textColor="#000"
-                android:text="TopKek"
+                android:text="@string/topkek"
                 />
 
         </LinearLayout>
@@ -82,7 +82,7 @@
                 android:layout_margin="5dp"
                 android:textStyle="bold"
                 android:textColor="#000"
-                android:text="Review Link"
+                android:text="@string/review_link"
                 />
             <TextView
                 android:id="@+id/tv_movie_url_text"
@@ -92,7 +92,7 @@
                 android:layout_margin="5dp"
                 android:textStyle="bold"
                 android:textColor="#000"
-                android:text="TopKek"
+                android:text="@string/topkek"
                 android:clickable="true"
                 android:focusable="true"
                 />

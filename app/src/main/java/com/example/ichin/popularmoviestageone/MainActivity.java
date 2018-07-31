@@ -6,6 +6,7 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -296,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, @NonNull Bundle args) {
         return new AsyncTaskLoader<Cursor>(this) {
 
             Cursor mMovieData = null;
@@ -324,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             null,
                             null,
                             null);
-                    favMovieCountInitial = temp.getCount();
+                    if(temp!=null){ favMovieCountInitial = temp.getCount();}
                     return temp;
                 }
                 catch (Exception e){
@@ -344,14 +345,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         customFavoriteMovieAdapter.swapCursor(data);
 
 
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         customFavoriteMovieAdapter.swapCursor(null);
     }
 

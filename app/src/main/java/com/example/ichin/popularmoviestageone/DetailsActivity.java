@@ -3,7 +3,6 @@ package com.example.ichin.popularmoviestageone;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Movie;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -45,8 +43,6 @@ import static com.example.ichin.popularmoviestageone.utilities.Utils.API_KEY;
 public class DetailsActivity extends AppCompatActivity {
 
     private static final String TAG = DetailsActivity.class.getSimpleName();
-    private ImageView posterImage;
-    private TextView movieTitle;
     private TextView movieOverview;
     private TextView movieReleaseDate;
     private TextView movieRating;
@@ -67,8 +63,8 @@ public class DetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_details);
 
 
-        movieTitle = findViewById(R.id.tv_movie_detail_title_text);
-        posterImage = findViewById(R.id.iv_movie_detail_poster);
+        TextView movieTitle = findViewById(R.id.tv_movie_detail_title_text);
+        ImageView posterImage = findViewById(R.id.iv_movie_detail_poster);
         movieOverview = findViewById(R.id.tv_movie_detail_overview_text);
         movieReleaseDate = findViewById(R.id.tv_movie_detail_release_date_text);
         movieRating = findViewById(R.id.tv_movie_detail_user_rating_text);
