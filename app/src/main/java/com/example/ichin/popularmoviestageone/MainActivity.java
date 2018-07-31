@@ -2,10 +2,8 @@ package com.example.ichin.popularmoviestageone;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
@@ -34,12 +32,14 @@ import com.example.ichin.popularmoviestageone.rest.MovieApiClient;
 import com.example.ichin.popularmoviestageone.rest.MovieApiInterface;
 import com.example.ichin.popularmoviestageone.utilities.Utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.example.ichin.popularmoviestageone.data.MovieContract.MovieListEntry.COLUMN_MOVIE_ID;
+import static com.example.ichin.popularmoviestageone.data.MovieContract.MovieListEntry.CONTENT_URI;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
     private static final String PARAM_SORT="popularity.desc";
@@ -55,10 +55,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private boolean isTopRatedAlready = false;
     private RelativeLayout layout_error;
     private RelativeLayout layout_original;
-    private ArrayList<Movies> movies;
     private boolean isFavoriteMovieViewAlready = true;
-    private Handler handler;
-    private ContentObserver contentObserver;
     private int favMovieCountInitial;
     private TextView errorMsg;
 
@@ -312,9 +309,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             public Cursor loadInBackground() {
                 try{
                     Cursor temp =
-                     getContentResolver().query(MovieContract.MovieListEntry.CONTENT_URI,
+                     getContentResolver().query(CONTENT_URI,
                             new String[]{
-                                    MovieContract.MovieListEntry.COLUMN_MOVIE_ID,
+                                    COLUMN_MOVIE_ID,
                                     MovieContract.MovieListEntry.COLUMN_MOVIE_TITLE,
                                     MovieContract.MovieListEntry.COLUMN_MOVIE_OVERVIEW,
                                     MovieContract.MovieListEntry.COLUMN_MOVIE_VOTE_AVERAGE,
