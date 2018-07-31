@@ -20,12 +20,13 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_MOVIE_TABLE =
 
                 "CREATE TABLE " + MovieContract.MovieListEntry.TABLE_NAME + " ("+
-                        MovieContract.MovieListEntry.MOVIE_ID               + " INTEGER PRIMARY KEY AUTOINCREMENT, "    +
-                        MovieContract.MovieListEntry.MOVIE_DURATION         + " INTEGER, "                              +
-                        MovieContract.MovieListEntry.MOVIE_RELEASE_DATE     + " TEXT, "                                 +
-                        MovieContract.MovieListEntry.MOVIE_RATING           + " REAL, "                                 +
-                        MovieContract.MovieListEntry.MOVIE_BACKDROP_PATH    + " TEXT, "                                 +
-                        MovieContract.MovieListEntry.MOVIE_POSTER_PATH      + " TEXT "                                  + ");";
+                        MovieContract.MovieListEntry.COLUMN_MOVIE_ID               + " INTEGER PRIMARY KEY AUTOINCREMENT, "    +
+                        MovieContract.MovieListEntry.COLUMN_MOVIE_TITLE + " TEXT," +
+                        MovieContract.MovieListEntry.COLUMN_MOVIE_VOTE_AVERAGE + " DOUBLE, "                              +
+                        MovieContract.MovieListEntry.COLUMN_MOVIE_OVERVIEW + " TEXT,"                                       +
+                        MovieContract.MovieListEntry.COLUMN_MOVIE_RELEASE_DATE     + " TEXT, "                                 +
+                        MovieContract.MovieListEntry.COLUMN_MOVIE_BACKDROP_PATH    + " TEXT, "                                 +
+                        MovieContract.MovieListEntry.COLUMN_MOVIE_POSTER_PATH      + " TEXT "                                  + ");";
 
         db.execSQL(SQL_CREATE_MOVIE_TABLE);
     }

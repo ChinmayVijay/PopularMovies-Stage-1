@@ -1,19 +1,29 @@
 package com.example.ichin.popularmoviestageone;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Movie;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ichin.popularmoviestageone.adapters.MovieReviewAdapter;
 import com.example.ichin.popularmoviestageone.adapters.TrailerViewAdapter;
+import com.example.ichin.popularmoviestageone.data.MovieContract;
 import com.example.ichin.popularmoviestageone.listener.OnItemClickListener;
+import com.example.ichin.popularmoviestageone.listener.TrailerListener;
 import com.example.ichin.popularmoviestageone.model.MovieReviewsResponse;
 import com.example.ichin.popularmoviestageone.model.MovieTrailerResponse;
 import com.example.ichin.popularmoviestageone.model.Movies;
@@ -47,6 +57,9 @@ public class DetailsActivity extends AppCompatActivity {
     private RecyclerView trailerRecyclerView;
     private RecyclerView reviewRecyclerView;
     private MovieReviewAdapter movieReviewAdapter;
+    private FloatingActionButton fabFavMovie;
+    private boolean isMovieFavorite = false;
+    private TrailerListener trailerListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +72,7 @@ public class DetailsActivity extends AppCompatActivity {
         movieOverview = findViewById(R.id.tv_movie_detail_overview_text);
         movieReleaseDate = findViewById(R.id.tv_movie_detail_release_date_text);
         movieRating = findViewById(R.id.tv_movie_detail_user_rating_text);
+        fabFavMovie = findViewById(R.id.fab_favoriteMovie);
 
         trailerRecyclerView = findViewById(R.id.rv_movieTrailers);
         reviewRecyclerView = findViewById(R.id.rv_movieReviews);
@@ -86,20 +100,61 @@ public class DetailsActivity extends AppCompatActivity {
         getMoviesTrailer();
         getMovieReviews();
 
+        checkMovieAlreadyFavorite();
+
         mListener = new OnItemClickListener() {
             @Override
             public void onItemClick(Movies movie) {
 
             }
+        };
 
+        trailerListener = new TrailerListener() {
             @Override
-            public void onYoutubeItemClick(String key) {
+            public void onYoutubeLinkClick(String key) {
                 Uri uri = Uri.parse("https://www.youtube.com/watch?v=" +key);
                 Intent intent = new Intent(Intent.ACTION_VIEW,uri);
                 startActivity(intent);
             }
+
+            @Override
+            public void onShareLinkClick(String url) {
+                String youtubeUrl = "https://www.youtube.com/watch?v=" + url;
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT,"Watch this link!");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, youtubeUrl);
+                startActivity(Intent.createChooser(shareIntent,"Share Link!"));
+            }
         };
 
+        fabFavMovie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v("FAB", "button clicked");
+                Toast.makeText(DetailsActivity.this, "fav button clicked", Toast.LENGTH_SHORT).show();
+                new FavoriteMovieMarkUnmarkTask().execute();
+            }
+        });
+
+    }
+
+    @NonNull
+    private ContentValues getContentValues() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MovieContract.MovieListEntry.COLUMN_MOVIE_ID, movie.getId());
+        contentValues.put(MovieContract.MovieListEntry.COLUMN_MOVIE_TITLE,movie.getTitle());
+        contentValues.put(MovieContract.MovieListEntry.COLUMN_MOVIE_OVERVIEW,movie.getOverview());
+        contentValues.put(MovieContract.MovieListEntry.COLUMN_MOVIE_VOTE_AVERAGE,movie.getVoteAverage());
+        contentValues.put(MovieContract.MovieListEntry.COLUMN_MOVIE_RELEASE_DATE,movie.getReleaseDate());
+        contentValues.put(MovieContract.MovieListEntry.COLUMN_MOVIE_BACKDROP_PATH,movie.getBackdropPath());
+        contentValues.put(MovieContract.MovieListEntry.COLUMN_MOVIE_POSTER_PATH, movie.getPosterPath());
+        return contentValues;
+    }
+
+    private void checkMovieAlreadyFavorite() {
+        new FavoriteMovieCheckerTask().execute();
     }
 
     private void getMovieReviews() {
@@ -135,7 +190,7 @@ public class DetailsActivity extends AppCompatActivity {
                 List<Result> movieTrailerResult = response.body().getResults();
                 Log.d(TAG, "total trailers: " + movieTrailerResult.size());
                 Log.d(TAG, "total trailers: " + "movie id: "+movieId);
-                trailerViewAdapter = new TrailerViewAdapter(getApplicationContext(),movieTrailerResult,mListener,R.layout.recyclerview_items);
+                trailerViewAdapter = new TrailerViewAdapter(getApplicationContext(),movieTrailerResult,trailerListener,R.layout.recyclerview_items);
                 RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
                 trailerRecyclerView.setLayoutManager(layoutManager);
                 trailerRecyclerView.setHasFixedSize(true);
@@ -149,4 +204,70 @@ public class DetailsActivity extends AppCompatActivity {
             }
         });
     }
+
+    private class FavoriteMovieCheckerTask extends AsyncTask<Void, Void, Boolean>{
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            Cursor cursor = getApplicationContext().getContentResolver()
+                    .query(
+                            MovieContract.MovieListEntry.CONTENT_URI,
+                            new String[]{MovieContract.MovieListEntry.COLUMN_MOVIE_ID},
+                            MovieContract.MovieListEntry.COLUMN_MOVIE_ID + " = ?",
+                            new String[]{String.valueOf(movie.getId())},
+                            null
+                    );
+            boolean movieExists = cursor != null && cursor.getCount() == 1;
+            if(cursor!=null){
+                cursor.close();
+            }
+            return movieExists;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean movieExists) {
+            super.onPostExecute(movieExists);
+            if(movieExists){ fabFavMovie.setImageResource(R.drawable.ic_action_name);}
+            else{ fabFavMovie.setImageResource(R.drawable.ic_remove_favorite);}
+            isMovieFavorite = movieExists;
+        }
+    }
+
+    private class FavoriteMovieMarkUnmarkTask extends AsyncTask<Void, Void, Boolean>{
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            boolean isMarked;
+            if(isMovieFavorite){
+                isMarked = getApplicationContext().getContentResolver()
+                        .delete(MovieContract.MovieListEntry.CONTENT_URI,
+                                MovieContract.MovieListEntry.COLUMN_MOVIE_ID + " = ?",
+                                new String[]{String.valueOf(movie.getId())}) == 1;
+            }
+            else{
+                isMarked = getApplicationContext().getContentResolver()
+            .insert(MovieContract.MovieListEntry.CONTENT_URI,getContentValues()) !=null;
+            }
+            return isMarked;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isMarked) {
+            super.onPostExecute(isMarked);
+
+            if(!isMarked){
+                Toast.makeText(DetailsActivity.this, "Could not perform the operation!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            isMovieFavorite = !isMovieFavorite;
+            if(!isMovieFavorite){
+                fabFavMovie.setImageResource(R.drawable.ic_remove_favorite);
+                Toast.makeText(DetailsActivity.this, "Removed movie from favorites", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                fabFavMovie.setImageResource(R.drawable.ic_action_name);
+                Toast.makeText(DetailsActivity.this, "Marked movie as favorite", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
 }

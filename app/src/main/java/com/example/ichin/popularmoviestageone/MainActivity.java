@@ -2,8 +2,14 @@ package com.example.ichin.popularmoviestageone;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.ContentObserver;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,9 +20,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ichin.popularmoviestageone.adapters.CustomFavoriteMovieAdapter;
 import com.example.ichin.popularmoviestageone.adapters.MovieViewAdapter;
+import com.example.ichin.popularmoviestageone.data.MovieContract;
 import com.example.ichin.popularmoviestageone.listener.OnItemClickListener;
 import com.example.ichin.popularmoviestageone.model.Movies;
 import com.example.ichin.popularmoviestageone.model.MoviesResponse;
@@ -24,24 +33,33 @@ import com.example.ichin.popularmoviestageone.rest.MovieApiClient;
 import com.example.ichin.popularmoviestageone.rest.MovieApiInterface;
 import com.example.ichin.popularmoviestageone.utilities.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
     private static final String PARAM_SORT="popularity.desc";
     public static final String PROP_MOVIES = "Movies";
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int MOVIE_LOADER_ID = 0;
     private RecyclerView movieRecyclerView;
     private MovieViewAdapter movieAdapter;
+    private CustomFavoriteMovieAdapter customFavoriteMovieAdapter;
     private OnItemClickListener listener;
     private FloatingActionButton fabSortOptions;
     private boolean isPopularAlready = false;
     private boolean isTopRatedAlready = false;
     private RelativeLayout layout_error;
     private RelativeLayout layout_original;
+    private ArrayList<Movies> movies;
+    private boolean isFavoriteMovieViewAlready = true;
+    private Handler handler;
+    private ContentObserver contentObserver;
+    private int favMovieCountInitial;
+    private TextView errorMsg;
 
 
     @Override
@@ -61,6 +79,9 @@ public class MainActivity extends AppCompatActivity{
 
         layout_original = findViewById(R.id.rl_original);
         layout_error = findViewById(R.id.rl_error);
+        errorMsg = findViewById(R.id.tv_errorMessage);
+
+        customFavoriteMovieAdapter = new CustomFavoriteMovieAdapter(getApplicationContext(),listener);
 
         listener = new OnItemClickListener() {
             @Override
@@ -69,16 +90,54 @@ public class MainActivity extends AppCompatActivity{
                 detailsIntent.putExtra(PROP_MOVIES,movie);
                 startActivity(detailsIntent);
             }
-
-            @Override
-            public void onYoutubeItemClick(String key) {
-
-            }
         };
 
-        fetchPopularMovies();
+        if(savedInstanceState!=null){
+            isFavoriteMovieViewAlready = savedInstanceState.getBoolean("favorite");
+            isPopularAlready = savedInstanceState.getBoolean("popular");
+            isTopRatedAlready = savedInstanceState.getBoolean("topRated");
+            favMovieCountInitial = savedInstanceState.getInt("favMovCount");
+        }
+        if(isFavoriteMovieViewAlready){
+            getSupportLoaderManager().initLoader(MOVIE_LOADER_ID,null,this);
+            getFavoriteMovies();
+        }
+
+        if(isPopularAlready){
+            fetchPopularMovies();
+        }
+
+        if(isTopRatedAlready){
+            fetchTopRatedMovies();
+        }
 
     }
+
+    private void fetchFavoriteMovies() {
+        getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID,null,this);
+        getFavoriteMovies();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG,"After click on back button");
+        getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID,null,this);
+        if(isFavoriteMovieViewAlready){
+            getFavoriteMovies();
+        }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("popular",isPopularAlready);
+        outState.putBoolean("favorite",isFavoriteMovieViewAlready);
+        outState.putBoolean("topRated",isTopRatedAlready);
+        outState.putInt("favMovCount",favMovieCountInitial);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -127,6 +186,7 @@ public class MainActivity extends AppCompatActivity{
 
         isPopularAlready = true;
         isTopRatedAlready = false;
+        isFavoriteMovieViewAlready = false;
     }
 
     private MovieApiInterface getMovieApiInterface() {
@@ -165,9 +225,41 @@ public class MainActivity extends AppCompatActivity{
         });
         isTopRatedAlready = true;
         isPopularAlready = false;
+        isFavoriteMovieViewAlready = false;
 
 
     }
+
+    private void getFavoriteMovies(){
+        if(favMovieCountInitial > 0){
+            Toast.makeText(MainActivity.this, "Showing Favorite Movies", Toast.LENGTH_SHORT).show();
+            layout_original.setVisibility(View.VISIBLE);
+            layout_error.setVisibility(View.GONE);
+            fabSortOptions.setVisibility(View.VISIBLE);
+            errorMsg.setVisibility(View.VISIBLE);
+            customFavoriteMovieAdapter = new CustomFavoriteMovieAdapter(getApplicationContext(),listener);
+            RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
+            movieRecyclerView.setHasFixedSize(true);
+            movieRecyclerView.setLayoutManager(layoutManager);
+            movieRecyclerView.setAdapter(customFavoriteMovieAdapter);
+
+            isTopRatedAlready = false;
+            isPopularAlready = false;
+            isFavoriteMovieViewAlready = true;
+        }
+        else{
+            layout_original.setVisibility(View.GONE);
+            layout_error.setVisibility(View.VISIBLE);
+            errorMsg.setVisibility(View.VISIBLE);
+            errorMsg.setText(getResources().getString(R.string.no_fav_mov_found));
+            isFavoriteMovieViewAlready = true;
+
+
+        }
+
+
+    }
+
 
     private void showSortDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
@@ -187,6 +279,11 @@ public class MainActivity extends AppCompatActivity{
                         if(!isTopRatedAlready) fetchTopRatedMovies();
                         dialog.cancel();
                         break;
+                    case 2:
+
+                        //show favorite movies
+                        if(!isFavoriteMovieViewAlready) fetchFavoriteMovies();
+                        dialog.cancel();
                     default:
                         dialog.cancel();
                         break;
@@ -196,6 +293,66 @@ public class MainActivity extends AppCompatActivity{
         AlertDialog sortDialog = dialogBuilder.create();
         sortDialog.show();
 
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new AsyncTaskLoader<Cursor>(this) {
+
+            Cursor mMovieData = null;
+
+            @Override
+            protected void onStartLoading() {
+                if(mMovieData!=null) {deliverResult(mMovieData);}
+                else{ forceLoad();}
+            }
+
+            @Override
+            public Cursor loadInBackground() {
+                try{
+                    Cursor temp =
+                     getContentResolver().query(MovieContract.MovieListEntry.CONTENT_URI,
+                            new String[]{
+                                    MovieContract.MovieListEntry.COLUMN_MOVIE_ID,
+                                    MovieContract.MovieListEntry.COLUMN_MOVIE_TITLE,
+                                    MovieContract.MovieListEntry.COLUMN_MOVIE_OVERVIEW,
+                                    MovieContract.MovieListEntry.COLUMN_MOVIE_VOTE_AVERAGE,
+                                    MovieContract.MovieListEntry.COLUMN_MOVIE_RELEASE_DATE,
+                                    MovieContract.MovieListEntry.COLUMN_MOVIE_BACKDROP_PATH,
+                                    MovieContract.MovieListEntry.COLUMN_MOVIE_POSTER_PATH
+                            },
+                            null,
+                            null,
+                            null);
+                    favMovieCountInitial = temp.getCount();
+                    return temp;
+                }
+                catch (Exception e){
+                    Log.e(TAG, "Failed to load Data");
+                    e.printStackTrace();
+                    return null;
+                }
+
+            }
+
+            @Override
+            public void deliverResult(Cursor data) {
+                mMovieData = data;
+                super.deliverResult(data);
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        customFavoriteMovieAdapter.swapCursor(data);
+
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        customFavoriteMovieAdapter.swapCursor(null);
     }
 
 }

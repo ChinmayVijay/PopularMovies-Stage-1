@@ -4,5 +4,4 @@ import com.example.ichin.popularmoviestageone.model.Movies;
 
 public interface OnItemClickListener {
     void onItemClick(Movies movie);
-    void onYoutubeItemClick(String key);
 }

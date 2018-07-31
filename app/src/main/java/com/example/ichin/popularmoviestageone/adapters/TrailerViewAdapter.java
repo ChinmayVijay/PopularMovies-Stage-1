@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.ichin.popularmoviestageone.R;
 import com.example.ichin.popularmoviestageone.listener.OnItemClickListener;
+import com.example.ichin.popularmoviestageone.listener.TrailerListener;
 import com.example.ichin.popularmoviestageone.model.Result;
 import com.example.ichin.popularmoviestageone.utilities.Utils;
 import com.squareup.picasso.Picasso;
@@ -22,10 +23,10 @@ public class TrailerViewAdapter extends RecyclerView.Adapter<TrailerViewAdapter.
 
     private Context mContext;
     private List<Result> mResults;
-    private OnItemClickListener mListener;
+    private TrailerListener mListener;
     private int mLayout;
 
-    public TrailerViewAdapter(Context mContext, List<Result> mResults, OnItemClickListener mListener, int mLayout) {
+    public TrailerViewAdapter(Context mContext, List<Result> mResults, TrailerListener mListener, int mLayout) {
         this.mContext = mContext;
         this.mResults = mResults;
         this.mListener = mListener;
@@ -51,14 +52,17 @@ public class TrailerViewAdapter extends RecyclerView.Adapter<TrailerViewAdapter.
 
     class MovieTrailerViewHolder extends RecyclerView.ViewHolder{
         ImageView trailerImage;
+        ImageView trailerShare;
         TextView trailerNum;
         MovieTrailerViewHolder(View itemView) {
             super(itemView);
             this.trailerNum = itemView.findViewById(R.id.tv_movieTitle);
             this.trailerImage = itemView.findViewById(R.id.iv_movieImage);
+            this.trailerShare = itemView.findViewById(R.id.iv_trailer_share);
         }
 
-        void bind(final Result movieResult, final OnItemClickListener listener){
+        void bind(final Result movieResult, final TrailerListener listener){
+            this.trailerShare.setVisibility(View.VISIBLE);
             Log.d("Trailers", movieResult.getName());
             trailerNum.setText(movieResult.getName());
             final String key = movieResult.getKey();
@@ -69,7 +73,14 @@ public class TrailerViewAdapter extends RecyclerView.Adapter<TrailerViewAdapter.
             trailerImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onYoutubeItemClick(key);
+                    listener.onYoutubeLinkClick(key);
+                }
+            });
+
+            trailerShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onShareLinkClick(key);
                 }
             });
 
